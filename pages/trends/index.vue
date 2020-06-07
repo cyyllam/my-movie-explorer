@@ -23,7 +23,7 @@
           <intro v-else>
             <p slot="title" class="lead">Trending {{trendPeriodText}}</p>
             <p slot="content">
-              Here are 20 movies trending {{trendPeriodText}} according to 
+              Here are {{ trendingResultsLength }} movies trending {{trendPeriodText}} according to 
               <a href="https://developers.themoviedb.org/3/trending/get-trending"
               target="_blank">tMDB</a>. 
               {{ trendPeriodDefinition }}
@@ -64,7 +64,7 @@
             <intro v-else>
               <p slot="title" class="lead">Discover non-English Language Films by Year</p>
               <p slot="content">
-                Here are 20 movies in {{ enteredLangDiscover }} from {{ enteredYearDiscover }} with high vote averages and more than 10 vote counts according to 
+                Here are {{ discoverResultsLength }} movies in {{ enteredLangDiscover }} from {{ enteredYearDiscover }} with high vote averages and more than 10 vote counts according to 
                 <a href="https://themoviedb.org"
                 target="_blank">tMDB</a>. 
                 </p>
@@ -135,7 +135,9 @@ export default {
           loading: true,
           trendingResults: null,
           discoverResults: null,
-          errored: false
+          errored: false,
+          discoverResultsLength: null,
+          trendingResultsLength: null,
         }
     },
     computed: {
@@ -157,15 +159,13 @@ export default {
           definition = 'The weekly list tracks items over a 7 day period, with a 7 day half life.';
         };
         return definition; 
-      },
-
-
+      }    
     },
     methods: {
          getTrendingResults(event) {
            // api call for retrieving tmdb trending data
           let apicall = 'https://api.themoviedb.org/3/trending/movie/' + event + '?api_key=890f4b3dccb1250594537c39d4d51fd9';
-           axios.get(apicall).then(response => { this.trendingResults = response.data.results })
+           axios.get(apicall).then(response => { let res = response.data.results; this.trendingResultsLength = res.length; this.trendingResults = res })
           .catch(error => {console.log(error)
           this.errored = true})
           .finally(() => this.loading = false);
@@ -173,7 +173,8 @@ export default {
         getDiscoverResults() {
           // api call for retrieving tmdb customized discover data
           let apicall = 'https://api.themoviedb.org/3/discover/movie?api_key=890f4b3dccb1250594537c39d4d51fd9&language=en-US&sort_by=vote_average.desc&include_adult=false&include_video=false&page=1&primary_release_year=' + this.selYearDiscover + '&vote_count.gte=10&with_original_language=' + this.selLangDiscover
-          axios.get(apicall).then(response => { this.discoverResults = response.data.results })
+          axios.get(apicall)
+          .then(response => { let res = response.data.results; this.discoverResultsLength = res.length; this.discoverResults = res })
           .catch(error => {console.log(error)
           this.errored = true})
           .finally(() => this.loading = false);
@@ -186,17 +187,9 @@ export default {
         discoverYear() {
           // return the year submitted from year input on Discover tab
           return this.enteredYearDiscover = this.selYearDiscover; 
-        }//,
-        // isDisabled() {
-        //   return !this.btnDiscoverState;
-        // }
+        }
     },
     mounted () {
-        // axios.get('https://api.themoviedb.org/3/trending/movie/week?api_key=890f4b3dccb1250594537c39d4d51fd9')
-        // .then(response => (this.weeklyResults = response.data.results))
-        // .catch(error => {console.log(error)
-        // this.errored = true})
-        // .finally(() => this.loading = false)
     }  
 }
 </script>
