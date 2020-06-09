@@ -72,10 +72,9 @@
 
              <b-card-group deck>
                <!-- Loop with CardDeck component -->
-              <CardDeck 
-              v-for="result in discoverResults" 
-              :key="result.id" 
-              :result="result" />
+              <CardDeck v-for="result in discoverResults" :key="result.id" :result="result">
+              <p slot="original_title">Original title: {{ result.original_title }}</p>
+              </CardDeck>
             </b-card-group> 
 
            </b-col>

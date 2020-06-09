@@ -9,7 +9,7 @@
     v-bind:img-alt="renderImgAlt(result.poster_path, result.title) "
     img-top>
         <b-card-text>
-          <p>Original Title: {{ result.original_title }}</p>
+          <slot name="original_title"></slot>
           <p>User rating: {{ result.vote_average }}</p> 
           <p style="font-size: .9rem;">{{ result.overview }}</p>             
         </b-card-text>
